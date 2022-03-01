@@ -278,7 +278,7 @@ function App() {
       </div>
 
       <div className="app__posts">
-      { user &&(
+      {
         posts.map(({id, post}) => {
           post_elements.push(<Post 
             key={id}
@@ -290,7 +290,7 @@ function App() {
             type={post.type}
             photo={post.photo}
           />)
-          }))}
+          })}
           
       </div>
       {
@@ -298,15 +298,15 @@ function App() {
         <div>
           <Promo displayname={user.displayName} photoURL={user.photoURL} />
           <Upload username={user.displayName} photo={user.photoURL} email={user.email} />
-          <div id="display_posts">
-            {post_elements}
-            <h3>All Caught Up!!</h3>
-          </div>
         </div>
         ) : (
           <h3>You need to Login to Upload</h3>
         )
       }
+      <div id="display_posts">
+        {post_elements}
+        <h3>All Caught Up!!</h3>
+      </div>
     </div>
   );
 }
