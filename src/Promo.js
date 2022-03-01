@@ -1,4 +1,5 @@
 import React from 'react';
+import './Promo.css';
 import { makeStyles } from '@material-ui/core/styles';
 import { Avatar } from '@material-ui/core';
 
@@ -27,7 +28,7 @@ function getModalStyle() {
 function Promo({displayname, photoURL}) {
     const classes = useStyles();
     return (
-        <div>
+        <div class = "promo_body">
             <Avatar
             className="app__avatar"
             alt={displayname}

@@ -4,7 +4,6 @@
 
 .app{
   background-color: #fafafa;
-  height:100vh;
 }
 
 .app_posts{
@@ -13,6 +12,10 @@
 
 .app__avatar{
   margin-left: 20px;
+}
+
+#display_posts{
+  padding : 0px 400px;
 }
 
 

@@ -7,7 +7,6 @@ import {auth, db, storage} from "./firebase"
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import { Avatar, Button, Input } from '@material-ui/core';
-import InstagramEmbed from 'react-instagram-embed';
 import { render } from '@testing-library/react';
 
 function getModalStyle() {
@@ -46,8 +45,7 @@ function App() {
   const [openPicChange,setOpenPicChange] = useState(false);
   const [Searchemail, setSearchEmail] = useState("");
   const [follows, setFollows] = useState([]);
-  var posts_from_follows=[];
-  var other_posts=[];
+  var post_elements = []
 
   useEffect(() => {
     db.collection('posts').orderBy('timestamp','desc').onSnapshot(snapshot =>{
@@ -175,19 +173,6 @@ function App() {
     setOpenPicChange(false);
   }
 
-  const SearchEmail = (e) => {
-    const uid = user.uid;
-    var list = follows;
-    list.push(Searchemail);
-    db.collection("follows").doc("default").update({
-      [uid] : list,
-    })
-    .then(() => {
-      setFollows(list);
-      console.log(follows);
-    })
-  }
-
   return (
     <div className="app">
       <Modal
@@ -279,15 +264,6 @@ function App() {
       {
         user ? (
           <div>
-          <div className="app__follow">
-            <Input 
-                  type="text" 
-                  value={Searchemail}
-                  onChange={(e) => {setSearchEmail(e.target.value)}} 
-                  placeholder="Search for e-mail"/>
-            
-            <Button onClick={SearchEmail}>Follow</Button>
-          </div>
           <div className="app__loginContainer">
             <Button onClick={() => auth.signOut()}>Log Out</Button>
             {user.photoURL ? <Button onClick={() => setOpenPicChange(true)}>Change Profile Picture</Button> : <Button onClick={() => setOpenPicChange(true)}>Set Profile Picture</Button>}
@@ -304,8 +280,7 @@ function App() {
       <div className="app__posts">
       { user &&(
         posts.map(({id, post}) => {
-          follows.includes(post.email) ? posts_from_follows.push(
-            <Post 
+          post_elements.push(<Post 
             key={id}
             postId={id}
             user={user}
@@ -314,50 +289,24 @@ function App() {
             username={post.username} 
             type={post.type}
             photo={post.photo}
-          />
-          ) : other_posts.push(
-            <Post 
-            key={id}
-            postId={id}
-            user={user}
-            caption={post.caption}
-            url={post.url}
-            username={post.username} 
-            type={post.type}
-            photo={post.photo}
-          />
-          )
+          />)
           }))}
-
+          
       </div>
       {
         user ? (
         <div>
           <Promo displayname={user.displayName} photoURL={user.photoURL} />
           <Upload username={user.displayName} photo={user.photoURL} email={user.email} />
-          {posts_from_follows}
-          <h3>All Caught Up</h3>
-          {other_posts}
+          <div id="display_posts">
+            {post_elements}
+            <h3>All Caught Up!!</h3>
+          </div>
         </div>
         ) : (
           <h3>You need to Login to Upload</h3>
         )
       }
-      
-     {/* <InstagramEmbed
-        url='https://www.instagram.com/p/CMqqUjLAgQ0/?utm_source=ig_web_copy_link'
-        clientAccessToken='123|456'
-        maxWidth={320}
-        hideCaption={false}
-        containerTagName='div'
-        protocol=''
-        injectScript
-        onLoading={() => {}}
-        onSuccess={() => {}}
-        onAfterRender={() => {}}
-        onFailure={() => {}}
-      />
-    */}
     </div>
   );
 }
